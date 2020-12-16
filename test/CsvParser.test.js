@@ -1,21 +1,9 @@
 /* global describe, it */
 
 const assert = require('assert')
-// const rdf = require('rdf-ext')
-const CsvParser = require('../lib/CsvParser')
 const { PassThrough } = require('readable-stream')
-
-function consume (readable) {
-  return new Promise((resolve, reject) => {
-    readable.on('end', function () {
-      resolve()
-    })
-
-    readable.on('error', function (err) {
-      reject(err)
-    })
-  })
-}
+const CsvParser = require('../lib/CsvParser')
+const { consume } = require('./utils')
 
 describe('csvParser', () => {
   it('should be a function', () => {
@@ -41,7 +29,6 @@ describe('csvParser', () => {
     input.write('value0,value1\n')
     input.end()
 
-    // return rdf.waitFor(parser)
     consume(parser)
   })
 
@@ -51,7 +38,6 @@ describe('csvParser', () => {
 
     input.pipe(parser)
 
-    const output = []
     const expected = [{
       line: 2,
       row: {
@@ -60,6 +46,7 @@ describe('csvParser', () => {
       }
     }]
 
+    const output = []
     parser.on('data', (data) => {
       output.push(data)
     })
@@ -68,9 +55,7 @@ describe('csvParser', () => {
     input.write('value0,value1\n')
     input.end()
 
-    // await rdf.waitFor(parser)
     await consume(parser)
-
     assert.deepStrictEqual(output, expected)
   })
 
@@ -80,7 +65,6 @@ describe('csvParser', () => {
 
     input.pipe(parser)
 
-    const output = []
     const expected = [{
       line: 2,
       row: {
@@ -89,6 +73,7 @@ describe('csvParser', () => {
       }
     }]
 
+    const output = []
     parser.on('data', (data) => {
       output.push(data)
     })
@@ -97,9 +82,6 @@ describe('csvParser', () => {
     input.write('value0,value1\n')
     input.end()
 
-    // return rdf.waitFor(parser).then(() => {
-    //   assert.deepStrictEqual(output, expected)
-    // })
     consume(parser).then(() => {
       assert.deepStrictEqual(output, expected)
     })
@@ -111,7 +93,6 @@ describe('csvParser', () => {
 
     input.pipe(parser)
 
-    const output = []
     const expected = [{
       line: 2,
       row: {
@@ -120,6 +101,7 @@ describe('csvParser', () => {
       }
     }]
 
+    const output = []
     parser.on('data', (data) => {
       output.push(data)
     })
@@ -128,9 +110,6 @@ describe('csvParser', () => {
     input.write('value0;value1\n')
     input.end()
 
-    // return rdf.waitFor(parser).then(() => {
-    //   assert.deepStrictEqual(output, expected)
-    // })
     consume(parser).then(() => {
       assert.deepStrictEqual(output, expected)
     })
