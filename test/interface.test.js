@@ -88,7 +88,7 @@ describe('csvValidatingParser', () => {
     })
   })
 
-  it('should parse lines with a common alternative delimiter (;)', () => {
+  it('should parse lines with a common alternative delimiter (;) and a newline (\\n) identification', () => {
     const input = new PassThrough()
     input.write('key1;key2;key3\n')
     input.write('value1_1;value2_1;value3_1\n')
@@ -96,7 +96,6 @@ describe('csvValidatingParser', () => {
     input.write('value1_3;value2_3;value3_3\n')
     input.write('value1_4;value2_4;value3_4\n')
     input.write('value1_5;value2_5;value3_5\n')
-
     input.end()
 
     const expected = [{
@@ -127,113 +126,87 @@ describe('csvValidatingParser', () => {
     })
   })
 
-  //   it('should parse lines with a non-common alternative (|) and missing ending delimiter', () => {
-  //     const input = new PassThrough()
-  //     input.write('key1|key2|key3\n')
-  //     input.write('value1_1|value2_1|value3_1\n')
-  //     input.write('value1_2|\n')
-  //     input.end()
+  it('should parse lines with a non-common alternative delimiter (D), identifying a multi-symbol newline (\\r\\n)', () => {
+    const input = new PassThrough()
+    input.write('key1|keyD|key3\r\n')
+    input.write('value1_1|valueD_1|value3_1\r\n')
+    input.write('value1_D||\r\n')
+    input.write('value1_3|valueD_3|value3_3\r\n')
+    input.end()
 
-  //     const expected = [{
-  //       line: 2,
-  //       row: {
-  //         key1: 'value1_1',
-  //         key2: 'value2_1',
-  //         key3: 'value3_1'
-  //       }
-  //     }, {
-  //       line: 3,
-  //       row: {
-  //         key1: 'value1_2',
-  //         key2: undefined,
-  //         key3: undefined
-  //       }
-  //     }]
+    const expected = [{
+      line: 2,
+      row: {
+        'key1|key': 'value1_1|value',
+        '|key3': '_1|value3_1'
+      }
+    }, {
+      line: 3,
+      row: {
+        'key1|key': 'value1_',
+        '|key3': '||'
+      }
+    }, {
+      line: 4,
+      row: {
+        'key1|key': 'value1_3|value',
+        '|key3': '_3|value3_3'
+      }
+    }]
 
-  //     const output = []
-  //     const parser = Parser.import(input, { newLine: '\n' })
-  //     parser.on('data', (data) => {
-  //       output.push(data)
-  //     })
+    const output = []
+    const parser = Parser.import(input)
+    parser.on('data', (data) => {
+      output.push(data)
+    })
 
-  //     console.log(`output: ${output} vs expected: ${expected}`)
-  //     return consume(parser).then(() => {
-  //       assert.deepStrictEqual(output, expected)
-  //     })
-  //   })
+    return consume(parser).then(() => {
+      assert.deepStrictEqual(output, expected)
+    })
+  })
 
-  //   it('should parse lines with an alternative (|) and missing ending delimiter, and multi-symbol new lines', () => {
-  //     const input = new PassThrough()
-  //     input.write('key1|key2|key3\r\n')
-  //     input.write('value1_1|value2_1;\r\n')
-  //     input.write('value1_2|\r\n')
-  //     input.write('value1_3|value2_3|value3_3\r\n')
-  //     input.write('value1_4|value2_4|value3_4\r\n')
-  //     input.write('value1_5|value2_5|value3_5\r\n')
-  //     input.end()
+  it('should parse lines with a non-common alternative delimiter (|), which is missed in the end of line, and identification of a multi-symbol newline (\\n\\r)', () => {
+    const input = new PassThrough()
+    input.write('keyA|keyB|keyC|keyD\n\r')
+    input.write('value1_1|value2_1|value3_1|value4_1\n\r')
+    input.write('valueA_2|||\n\r')
+    input.write('value1_3|value2_3|value3_3|value4_3\n\r')
+    input.end()
 
-  //     const expected = [{
-  //       line: 2,
-  //       row: {
-  //         key1: 'value1_1',
-  //         key2: 'value2_1',
-  //         key3: 'value3_1'
-  //       }
-  //     }, {
-  //       line: 3,
-  //       row: {
-  //         key1: 'value1_2',
-  //         key2: undefined,
-  //         key3: undefined
-  //       }
-  //     }]
+    const expected = [{
+      line: 2,
+      row: {
+        keyA: 'value1_1',
+        keyB: 'value2_1',
+        keyC: 'value3_1',
+        keyD: 'value4_1'
+      }
+    }, {
+      line: 3,
+      row: {
+        keyA: 'valueA_2',
+        keyB: '',
+        keyC: '',
+        keyD: ''
+      }
+    }, {
+      line: 4,
+      row: {
+        keyA: 'value1_3',
+        keyB: 'value2_3',
+        keyC: 'value3_3',
+        keyD: 'value4_3'
+      }
+    }]
 
-  //     const output = []
-  //     const parser = Parser.import(input, { newLine: '\r\n' })
-  //     parser.on('data', (data) => {
-  //       if (output.length < 2) { output.push(data) }
-  //     })
+    const output = []
+    const parser = Parser.import(input)
+    parser.on('data', (data) => {
+      output.push(data)
+    })
 
-  //     console.log(`output: ${output} vs expected: ${expected}`)
-  //     return consume(parser).then(() => {
-  //       assert.deepStrictEqual(output, expected)
-  //     })
-  //   })
-
-  //   it('should parse lines with an alternative (|) and missing ending delimiter, and gues new lines', () => {
-  //     const input = new PassThrough()
-  //     input.write('key1|key2|key3\n')
-  //     input.write('value1_1|value2_1|value3_1\n')
-  //     input.write('value1_2|\n')
-  //     input.write('value1_3|value2_3|value3_3\n')
-  //     input.write('value1_4|value2_4|value3_4\n')
-  //     input.write('value1_5|value2_5|value3_5\n')
-  //     input.end()
-
-  //     const expected = [{
-  //       line: 2,
-  //       row: {
-  //         key1: 'value1_1',
-  //         key2: 'value2_1',
-  //         key3: 'value3_1'
-  //       }
-  //     }, {
-  //       line: 3,
-  //       row: {
-  //         key1: 'value1_2',
-  //         key2: undefined,
-  //         key3: undefined
-  //       }
-  //     }]
-
-  //     const output = []
-  //     const parser = Parser.import(input)
-  //     parser.on('data', (data) => {
-  //       if (output.length < 2) { output.push(data) }
-  //     })
-
-//     return consume(parser).then(() => {
-//       assert.deepStrictEqual(output, expected)
-//     })
-//   })
+    return consume(parser).then(() => {
+      assert.deepStrictEqual(output, expected)
+    })
+  })
 })

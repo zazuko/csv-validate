@@ -85,7 +85,9 @@ class Parser { // ValidatingParser
           // output.parser.setQuote([...this.quotes][0]) // || '"'
         }
         if (!this.newLine && csvMeta.newlineStr) {
-          console.info(`Inferred newLine (code point): ${csvMeta.newlineStr.codePointAt(0)}`)
+          let cpoints = ''
+          for (const cp of csvMeta.newlineStr) { cpoints += ' 0x' + cp.codePointAt(0).toString(16).toUpperCase() }
+          console.info(`Inferred newLine (codepoints): ${cpoints}`)
           updOpts.newlineStr = this.newLine = csvMeta.newlineStr // || ''
         }
 
