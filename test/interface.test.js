@@ -79,11 +79,7 @@ describe('csvValidatingParser', () => {
     const output = []
     // const parser = Parser.import(input, { newLine: '\n', quotes: '"', delimiter: ',' })
     const parser = Parser.import(input, { newLine: '\n', quotes: '"' })
-    parser.on('data', (data) => {
-      output.push(data)
-    })
-
-    return consume(parser).then(() => {
+    return consume(parser, output).then(() => {
       assert.deepStrictEqual(output, expected)
     })
   })
@@ -156,11 +152,7 @@ describe('csvValidatingParser', () => {
 
     const output = []
     const parser = Parser.import(input)
-    parser.on('data', (data) => {
-      output.push(data)
-    })
-
-    return consume(parser).then(() => {
+    return consume(parser, output).then(() => {
       assert.deepStrictEqual(output, expected)
     })
   })
@@ -201,11 +193,7 @@ describe('csvValidatingParser', () => {
 
     const output = []
     const parser = Parser.import(input)
-    parser.on('data', (data) => {
-      output.push(data)
-    })
-
-    return consume(parser).then(() => {
+    return consume(parser, output).then(() => {
       assert.deepStrictEqual(output, expected)
     })
   })
