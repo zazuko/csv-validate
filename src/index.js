@@ -2,6 +2,7 @@ const CsvParser = require('../index')
 // const { Readable } = require('readable-stream')
 const { PassThrough } = require('readable-stream')
 // global.Buffer = global.Buffer || require('buffer').Buffer
+const { once } = require('events')
 
 ;(function () {
   // Drag-and-Drop File Uploader With Progress Bar (Vanilla JavaScript)
@@ -74,66 +75,52 @@ const { PassThrough } = require('readable-stream')
   // The Local files are opened with FileReader API, and remote files are downloaded with XMLHttpRequest
 })()
 
-function handleFiles (files) {
-  // files.length
-  // ([...files]).forEach(parseFile)
+async function handleFiles (files) {
+  // files.length can be used to show the processing progress
+  // ([...files]).forEach(parseFile); // files is not an array, but a FileList
   for (const file of files) {
-    parseFile(file)
+    let errs = await parseFile(file, errs)
+    if (errs.length) {
+        const hdr = document.createElement('h2')
+        hdr.textContent = 'Parsing Errors'
+        document.getElementById('results').appendChild(par)
+    }
+    for (const err of errs) {
+      const par = document.createElement('p')
+      par.textContent = err
+      document.getElementById('results').appendChild(par)
+    }
   }
-
-  // const files = [...files]
-  // files.forEach(uploadFile)
-  // files.forEach(previewFile)
-  // May use: localStorage
 }
 
-function parseFile (file) {
+async function parseFile (file) {
   const sizeRemMB = file.size % (1024 * 1024)
   console.log(`Parsing ${file.size - sizeRemMB} MB and ${sizeRemMB} bytes: ${file.name}`)
-  // const fstream = file.stream()
   const freader = file.stream().getReader()
   const input = new PassThrough()
   const csvParser = CsvParser.import(input) // , { newLine: '\n' }
   csvParser
-    .on('data', (data) => {
-      processed += data.length
-      console.log(`Parsing progress: ${processed / file.size * 100} %`)
-    })
+    //.on('data', (data) => {
+    //  processed += data.length
+    //  console.log(`Parsing progress: ${processed / file.size * 100} %`)
+    //})
     .on('end', function () { console.log('Parser finished') })
     .on('error', function (err) { console.error(err) })
 
-  // file.stream().pipeTo(input)
-
-  // Stream the input file
+  // Form a parser input stream form the file
   let processed = 0 // The size of the processed part of the stream in bytes
-  let i = 10
-
-  freader.read().then(function parse ({ done, data }) {
-    // Result objects contain two properties:
-    // done  - true if the stream has already given you all its data.
-    // data: Uint8Array - some data. Always undefined when done is true.
-    if (done) {
-      input.end()
-      console.log('freader.parse(): finished')
-      return
+  let result
+  while (!(result = await freader.read()).done) {
+    // Note: drain event listener causes
+    // from-browser.js:2 Uncaught Error:  Readable.from is not available in the browser
+    if (!input.write(result.value)) {
+      // Handle backpressure
+      await once(input, 'drain')
     }
-    if (data === undefined) {
-      console.log(`freader.parse() [${i}]: no data`)
-      ++i
-      if (i >= 10) {
-        input.end()
-        return
-      }
-      return freader.read().then(parse)
-    }
-
-    input.write(data)
-    processed += data.length
+    // input.write(result.value)
+    processed += result.value.byteLength // value.length
     console.log(`Progress: ${processed / file.size * 100} %`)
-
-    // Read some more, and call this function again
-    return freader.read().then(parse)
-  })
+  }
 
   // input.write('key1;key2;key3\n')
   console.log('parseFile() finished')
