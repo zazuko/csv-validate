@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <!-- <style></style> -->
+    <link rel="stylesheet" href="styles.css">
+    <title>CSV Validator</title>
+    <!-- <script src="https://unpkg.com/lodash@4.17.20"></script> -->
+    <script>
+        /* @licstart magnet:?xt=urn:btih:8e4f440f4c65981c5bf93c76d35135ba5064d8b7&dn=apache-2.0.txt Apache 2.0
+        License: Apache 2 (https://www.apache.org/licenses/LICENSE-2.0)
+        Copyright (C) 2020 Artem Lutov
+        @licend */
+    </script>
+  </head>
+  <body>
+    <h1>CSV Validation</h1>
+    <noscript>Your browser either does not support or blocks JavaScript, which is mandatory to interact with this page!</noscript>
+    <div id="drop-area">
+      <form class="my-form">
+        <p>Upload CSV files for the validation with the file dialog or by dragging and dropping them onto the dashed region</p>
+        <input type="file" id="fileElem" multiple accept=".csv, text/csv, application/csv" onchange="handleFiles(this.files)">
+        <label class="button" for="fileElem">Select CSV files</label>
+      </form>
+      <!-- <progress id="progress-bar" max=100 value=0></progress> -->
+      <div id="results"></div>
+    </div>
+
+    <!-- Note: the script should be located in the body if implicit dependencies exist, which should be placed in the header -->
+    <!-- Note: the script should be located in the end of the body if operates with the page content -->
+    <script src="main.js"></script>
+  </body>
+</html>
