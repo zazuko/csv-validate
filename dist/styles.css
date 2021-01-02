@@ -53,9 +53,7 @@ p.csv-input-form {
   /* min-width: 480px; */
   /* border: 2px solid #ccc; */
   max-width: 1024px;
-  align
 }
-
 progress {
   height: 1.5em;
   width: 100%;
@@ -70,7 +68,6 @@ dt {
 .ok {
   color: green;
 }
-
 .fail {
   color: darkred;
 }

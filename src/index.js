@@ -49,16 +49,12 @@ const { once } = require('events')
     // handleFiles(files)
 
     // Note: there are different interfaces exist for files processing: DataTransferItemList vs
-    if (dt.items) {
-      // dt.items.length
-      for (const dti of dt.items) {
-        // If dropped items aren't files, reject them
-        if (dti.kind === 'file') { parseFile(dti.getAsFile()) }
-      }
-    } else {
-      // Use DataTransfer interface to access the file(s)
-      handleFiles(dt.files)
+    let files = dt.files // Use DataTransfer interface to access the file(s)
+    if (files === undefined && dt.items) {
+      // If dropped items aren't files, reject them
+      files = [...dt.items].filter(e => e.kind === 'file').map(e => e.getAsFile())
     }
+    handleFiles(dt.files)
   }
 
   // function previewFile(file) {
@@ -75,22 +71,67 @@ const { once } = require('events')
   // The Local files are opened with FileReader API, and remote files are downloaded with XMLHttpRequest
 })()
 
+function removeElement (eid) {
+  const el = document.getElementById(eid)
+  if (el) {
+    el.parentElement.removeChild(el)
+  }
+}
+
 async function handleFiles (files) {
   // files.length can be used to show the processing progress
   // ([...files]).forEach(parseFile); // files is not an array, but a FileList
+
+  // Cleanup results representation
+  removeElement('summary')
+  removeElement('report')
+  const progressBar = document.getElementById('progress-all')
+  progressBar.value = 0
+  if (!files.length) { return }
+
+  const resBlock = document.getElementById('results')
+  const dlReport = document.createElement('dl')
+  resBlock.appendChild(dlReport)
+
+  // Visualize report
+  let fails = 0
   for (const file of files) {
-    let errs = await parseFile(file, errs)
-    if (errs.length) {
-        const hdr = document.createElement('h2')
-        hdr.textContent = 'Parsing Errors'
-        document.getElementById('results').appendChild(par)
+    const dt = document.createElement('dt')
+    dt.textContent = file.name
+    dlReport.appendChild(dt)
+
+    const msgs = [] // Array of strings
+    const parsed = await parseFile(file, msgs)
+    if (parsed) {
+      // OK
+      const span = document.createElement('span')
+      span.textContent = '  OK'
+      span.classList.add('ok')
+      dt.appendChild(span)
+    } else {
+      ++fails
+      // Add FAIL
+      const span = document.createElement('span')
+      span.textContent = '  FAIL'
+      span.classList.add('fail')
+      dt.appendChild(span)
     }
-    for (const err of errs) {
-      const par = document.createElement('p')
-      par.textContent = err
-      document.getElementById('results').appendChild(par)
+
+    for (const msg of msgs) {
+      const dl = document.createElement('dl')
+      dl.textContent = msg
+      dlReport.appendChild(dl)
     }
   }
+
+  // Visualize the final summary
+  progressBar.value = 100
+  const pSum = document.createElement('p')
+  pSum.id = 'summary'
+  pSum.classList.add(fails ? 'fail' : 'ok')
+  pSum.textContent = fails ? `FAILED files: ${fails}/${files.length}`
+    : `Succeed all files: ${files.length}`
+  resBlock.appendChild(pSum)
 }
 
 async function parseFile (file) {
@@ -100,10 +141,10 @@ async function parseFile (file) {
   const input = new PassThrough()
   const csvParser = CsvParser.import(input) // , { newLine: '\n' }
   csvParser
-    //.on('data', (data) => {
+    // .on('data', (data) => {
     //  processed += data.length
     //  console.log(`Parsing progress: ${processed / file.size * 100} %`)
-    //})
+    // })
     .on('end', function () { console.log('Parser finished') })
     .on('error', function (err) { console.error(err) })
 
