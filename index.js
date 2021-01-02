@@ -95,12 +95,20 @@ class Parser { // ValidatingParser
 
         // Process the sniffed data
         // console.info(`inpPartProc() after sniffing: delimiter: ${output.parser.options.delimiter}, quote: ${output.parser.options.quote}`)
-        Readable.from([inpPart]).on('error', (err) => {
+
+        // ATTENTION: Readable.from is not available in the browser
+        // const rdinp = Readable.from([inpPart])
+        const rdinp = new Readable()
+        rdinp.push(inpPart)
+        rdinp.push(null)
+
+        rdinp.on('error', (err) => {
           output.emit('error', err)
         }).pipe(output) // , { end: false }
           .on('end', () => {
             input.pipe(output)
           })
+
         // console.debug(`inpPartProc() outputting, nlf: ${nlf}, ncr: ${ncr}, inpPart [${inpPart.length}]`)
         // input.pipe(output)
       }
