@@ -198,3 +198,62 @@ describe('csvValidatingParser', () => {
     })
   })
 })
+
+it('should respect quotes (")', () => {
+  const input = new PassThrough()
+  input.write('"key 1",key2\n')
+  input.write('value1_1,"value, 2_1"\n')
+  input.write('value1_2,value2_2\n')
+  input.end()
+
+  const expected = [{
+    line: 2,
+    row: {
+      'key 1': 'value1_1',
+      key2: 'value, 2_1'
+    }
+  }, {
+    line: 3,
+    row: {
+      'key 1': 'value1_2',
+      key2: 'value2_2'
+    }
+  }]
+
+  const output = []
+  // const parser = Parser.import(input, { newLine: '\n', quotes: '"', delimiter: ',' })
+  const parser = Parser.import(input, { newLine: '\n' })
+  return consume(parser, output).then(() => {
+    assert.deepStrictEqual(output, expected)
+  })
+})
+
+it('should resect unicode ("Ḋ"=U+1E0A includes the byte code 0xA of "\\n"=U+000A)', () => {
+  const input = new PassThrough()
+  input.write('key1,key2\n')
+  input.write('value1_Ḋ,value2_1\n')
+  input.write('value1_2,value2_2\n')
+  input.end()
+
+  const expected = [{
+    line: 2,
+    row: {
+      key1: 'value1_Ḋ',
+      key2: 'value2_1'
+    }
+  }, {
+    line: 3,
+    row: {
+      key1: 'value1_2',
+      key2: 'value2_2'
+    }
+  }]
+
+  const output = []
+  // const parser = Parser.import(input, { newLine: '\n', quotes: '"', delimiter: ',' })
+  const parser = Parser.import(input, { newLine: '\n', quotes: '"' })
+  return consume(parser, output).then(() => {
+    assert.deepStrictEqual(output, expected)
+  })
+})
+
