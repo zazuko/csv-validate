@@ -3,9 +3,9 @@ This JS CSV validating parser is based on [csv-parse](https://github.com/wdavidw
 
 `csv-validate` provides both NodeJS module (NPM), optional console UI (CLI), and browser/Web UI for the local validation of CSV files.
 
-`\author` Artem Lutov <lua&#64;&#108;utan&#46;ch>
-`\affiliation` [Zazuko GmbH](https://zazuko.com), [Lutov Analytics](https://lutan.ch)
-`\license` [Apache 2](https://www.apache.org/licenses/LICENSE-2.0)
+`\author` Artem Lutov <lua&#64;&#108;utan&#46;ch>  
+`\affiliation` [Zazuko GmbH](https://zazuko.com), [Lutov Analytics](https://lutan.ch)  
+`\license` [Apache 2](https://www.apache.org/licenses/LICENSE-2.0)  
 
 ## Web UI
 The Web UI bundle is located in `dist/` and consists of 3 files (and optional `test.csv` example to test the web app):
