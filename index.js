@@ -18,6 +18,7 @@ class Parser { // ValidatingParser
     this.delimiter = delimiter
     this.quotes = quotes
     this.newLine = newLine
+    // this.logger = logger
   }
 
   import (input, {

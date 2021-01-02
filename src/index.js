@@ -91,8 +91,13 @@ async function handleFiles (files) {
 
   const resBlock = document.getElementById('results')
   const dlReport = document.createElement('dl')
+  dlReport.id = 'report'
   resBlock.appendChild(dlReport)
 
+  // Evaluate total size of all files
+  let totalSize = 0 // Total size of files
+  for (const file of files) { totalSize += file.size }
+  let processedSize = 0 // Size of the processed files
   // Visualize report
   let fails = 0
   for (const file of files) {
@@ -101,7 +106,10 @@ async function handleFiles (files) {
     dlReport.appendChild(dt)
 
     const msgs = [] // Array of strings
-    const parsed = await parseFile(file, msgs)
+    const parsed = await parseFile(file, msgs, size => {
+      progressBar.value = Math.round((processedSize + size) / totalSize * 100)
+    })
+    processedSize += file.size
     const span = document.createElement('span')
     span.classList.add('ok', 'indicator')
     if (parsed) {
@@ -131,19 +139,31 @@ async function handleFiles (files) {
   resBlock.appendChild(pSum)
 }
 
-async function parseFile (file) {
+/** Parse
+ *
+ * @param {File} file  - input file to be parsed
+ * @param {Array} msgs  - tracing messages
+ * @param {function(sizeProcessed: int} progress  - parsing progress callback
+ * @return succeed
+ */
+async function parseFile (file, msgs, progress) {
   const sizeRemMB = file.size % (1024 * 1024)
   console.log(`Parsing ${file.size - sizeRemMB} MB and ${sizeRemMB} bytes: ${file.name}`)
   const freader = file.stream().getReader()
   const input = new PassThrough()
   const csvParser = CsvParser.import(input) // , { newLine: '\n' }
+  let succeed = true
   csvParser
     // .on('data', (data) => {
     //  processed += data.length
     //  console.log(`Parsing progress: ${processed / file.size * 100} %`)
     // })
     .on('end', function () { console.log('Parser finished') })
-    .on('error', function (err) { console.error(err) })
+    .on('error', function (err) {
+      succeed = false
+      console.error(err)
+      if (msgs !== undefined) { msgs.push(err) }
+    })
 
   // Form a parser input stream form the file
   let processed = 0 // The size of the processed part of the stream in bytes
@@ -158,16 +178,10 @@ async function parseFile (file) {
     // input.write(result.value)
     processed += result.value.byteLength // value.length
     console.log(`Progress: ${processed / file.size * 100} %`)
+    if (progress !== undefined) { progress(processed) }
   }
 
   // input.write('key1;key2;key3\n')
   console.log('parseFile() finished')
-
-  // Note: File.prototype.size can be used for the progress tracing
-  // const element = document.createElement('div');
-
-  // // Lodash, currently included via a script, is required for this line to work
-  // element.innerHTML = _.join(['Hello', 'webpack'], ' ');
-
-  // return element;
+  return succeed
 }
