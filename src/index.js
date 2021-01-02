@@ -102,20 +102,17 @@ async function handleFiles (files) {
 
     const msgs = [] // Array of strings
     const parsed = await parseFile(file, msgs)
+    const span = document.createElement('span')
+    span.classList.add('ok', 'indicator')
     if (parsed) {
-      // OK
-      const span = document.createElement('span')
-      span.textContent = '  OK'
+      span.textContent = 'OK'
       span.classList.add('ok')
-      dt.appendChild(span)
     } else {
       ++fails
-      // Add FAIL
-      const span = document.createElement('span')
-      span.textContent = '  FAIL'
+      span.textContent = 'FAIL'
       span.classList.add('fail')
-      dt.appendChild(span)
     }
+    dt.appendChild(span)
 
     for (const msg of msgs) {
       const dl = document.createElement('dl')

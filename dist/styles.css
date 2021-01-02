@@ -71,6 +71,9 @@ dt {
 .fail {
   color: darkred;
 }
+.indicator {
+  padding-left: 2em;
+}
 
 #summary {
   font-weight: bolder;
