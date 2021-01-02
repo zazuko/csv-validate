@@ -107,6 +107,9 @@ class Parser { // ValidatingParser
           output.emit('error', err)
         }).pipe(output) // , { end: false }
           .on('end', () => {
+            // if (input.readable) {
+            //   input.pipe(output)
+            // }
             input.pipe(output)
           })
 

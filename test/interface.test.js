@@ -228,7 +228,7 @@ it('should respect quotes (")', () => {
   })
 })
 
-it('should resect unicode ("Ḋ"=U+1E0A includes the byte code 0xA of "\\n"=U+000A)', () => {
+it('should respect unicode ("Ḋ"=U+1E0A includes the byte code 0xA of "\\n"=U+000A)', () => {
   const input = new PassThrough()
   input.write('key1,key2\n')
   input.write('value1_Ḋ,value2_1\n')
@@ -257,31 +257,26 @@ it('should resect unicode ("Ḋ"=U+1E0A includes the byte code 0xA of "\\n"=U+00
   })
 })
 
-it('should output objects with line number and row data', () => {
+it('should fail on bad CSV', () => {
   const input = new PassThrough()
   input.write('kzy1,key2\n')
   input.write('value1_1;value2_1\n')
   input.write('value1_2,value2_2\n')
   input.end()
 
-  const expected = [{
-    line: 2,
-    row: {
-      key1: 'value1_1',
-      key2: 'value2_1'
-    }
-  }, {
-    line: 3,
-    row: {
-      key1: 'value1_2',
-      key2: 'value2_2'
-    }
-  }]
-
-  const output = []
-  //const parser = Parser.import(input, { newLine: '\n', quotes: '"', delimiter: ',' })
-  const parser = Parser.import(input, { newLine: '\n', quotes: '"' })
-  return consume(parser, output).then(() => {
-    assert.deepStrictEqual(output, expected)
-  })
+  try {
+    // eslint-disable-next--- NodeJS features top-level await: https://www.gitmemory.com/issue/standard/standard/1548/711360331
+    await (async function () {  // eslint-disable-line
+      // const parser = Parser.import(input, { newLine: '\n', quotes: '"', delimiter: ',' })
+      const parser = Parser.import(input, { newLine: '\n', quotes: '"' })
+      const futureRes = consume(parser)
+      return futureRes.then(() => {
+        assert.fail('Bad CSV is processed silently')
+      }).catch(err => {
+        assert.ok('Bad CSV is caught: ' + err)
+      })
+    })()
+  } catch (err) {
+    assert.ok('Bad CSV is caught explicitly: ' + err)
+  }
 })

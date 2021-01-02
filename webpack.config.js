@@ -11,8 +11,8 @@ module.exports = {
     fallback: {
       stream: require.resolve('readable-stream'), // 'stream-browserify'
       events: require.resolve('events/'),
-      buffer: require.resolve('buffer/'),
-      //path: require.resolve("path-browserify"),
+      buffer: require.resolve('buffer/')
+      // path: require.resolve("path-browserify"),
     }
   },
   plugins: [

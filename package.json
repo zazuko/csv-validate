@@ -7,6 +7,18 @@
     "test": "standard && mocha",
     "build": "webpack"
   },
+  "standard": {
+    "ignore": [
+      "dist/main.js",
+      "test/interface.test.js"
+    ]
+  },
+  "eslintConfig": {
+    "env": {
+      "browser": true,
+      "node": true
+    }
+  },
   "bin": {
     "csv-validate": "./bin/csv-validate.js"
   },
