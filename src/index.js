@@ -122,10 +122,11 @@ async function handleFiles (files) {
     }
     dt.appendChild(span)
 
+    // console.info('Messages: ' + msgs.length)
     for (const msg of msgs) {
-      const dl = document.createElement('dl')
-      dl.textContent = msg
-      dlReport.appendChild(dl)
+      const dd = document.createElement('dd')
+      dd.textContent = msg
+      dlReport.appendChild(dd)
     }
   }
 
@@ -148,22 +149,36 @@ async function handleFiles (files) {
  */
 async function parseFile (file, msgs, progress) {
   const sizeRemMB = file.size % (1024 * 1024)
-  console.log(`Parsing ${file.size - sizeRemMB} MB and ${sizeRemMB} bytes: ${file.name}`)
+  console.info(`Parsing ${file.size - sizeRemMB} MB and ${sizeRemMB} bytes: ${file.name}`)
   const freader = file.stream().getReader()
   const input = new PassThrough()
   const csvParser = CsvParser.import(input) // , { newLine: '\n' }
-  let succeed = true
-  csvParser
+  // let succeed = true
+  const parseRes = new Promise((resolve, reject) => {
+    csvParser
     // .on('data', (data) => {
     //  processed += data.length
     //  console.log(`Parsing progress: ${processed / file.size * 100} %`)
     // })
-    .on('end', function () { console.log('Parser finished') })
-    .on('error', function (err) {
-      succeed = false
-      console.error(err)
-      if (msgs !== undefined) { msgs.push(err) }
-    })
+      .on('finish', function () {
+        console.log('CSV Parser finished: ' + file.name)
+        resolve(true)
+      })
+      .on('end', function () {
+        console.log('CSV Parser ended: ' + file.name)
+        resolve(true)
+      })
+      .on('error', function (err) {
+        // succeed = false
+        console.error(err)
+        if (msgs !== undefined) {
+          msgs.push(err)
+        // console.log('parseFile(), msgs : ' + msgs.length)
+        }
+        // reject(err)
+        resolve(false)
+      })
+  })
 
   // Form a parser input stream form the file
   let processed = 0 // The size of the processed part of the stream in bytes
@@ -175,13 +190,13 @@ async function parseFile (file, msgs, progress) {
       // Handle backpressure
       await once(input, 'drain')
     }
-    // input.write(result.value)
     processed += result.value.byteLength // value.length
-    console.log(`Progress: ${processed / file.size * 100} %`)
-    if (progress !== undefined) { progress(processed) }
+    if (progress !== undefined) {
+      progress(processed)
+    } else console.log(`File parsing progress: ${processed / file.size * 100} %`)
   }
+  // input.end()
 
-  // input.write('key1;key2;key3\n')
-  console.log('parseFile() finished')
-  return succeed
+  // console.log('parseFile() finished')
+  return parseRes
 }
