@@ -1,2 +1,7 @@
 package-lock.json
 node_modules/
+dist/**/
+dist/*.js
+dist/*.map
+dist/*.txt
+test/csv/
