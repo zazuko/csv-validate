@@ -1,8 +1,9 @@
 const path = require('path')
 const webpack = require('webpack')
 
-module.exports = {
-  mode: 'development', // 'production'
+module.exports = ['hidden-source-map'].map(devtool => ({
+  devtool,
+  mode: 'production',
   entry: './src/index.js',
   output: {
     filename: 'main.js',
@@ -22,4 +23,4 @@ module.exports = {
       process: 'process/browser'
     })
   ]
-}
+}))
