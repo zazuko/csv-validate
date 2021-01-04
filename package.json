@@ -1,6 +1,6 @@
 {
   "name": "csv-validate",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A CSV validator, featuring data streaming and error tracing",
   "main": "index.js",
   "scripts": {
