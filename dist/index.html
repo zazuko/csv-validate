@@ -23,8 +23,7 @@
     <form class="csv-input-form">
       <p>Upload CSV files for the validation with the file dialog or by dragging and dropping them onto the dashed
         region</p>
-      <input type="file" id="fileElem" multiple accept=".csv, text/csv, application/csv"
-        onchange="handleFiles(this.files)">
+      <input type="file" id="fileElem" multiple accept=".csv, text/csv, application/csv">  <!-- onchange="handleFiles(this.files)";  Note: functions are not accessible in the uniform way from HTML with the webpack bundle vs direct script linkage (except for the explicit module variable import rather than a file linkage) -->
       <label class="button" for="fileElem">Select CSV files</label>
     </form>
   </div>
@@ -46,6 +45,7 @@
   <!-- Note: the script should be located in the body if implicit dependencies exist, which should be placed in the header -->
   <!-- Note: the script should be located in the end of the body if operates with the page content -->
   <script src="main.js"></script>
+  <!-- <script src="../src/index.js"></script> -->
 </body>
 
 </html>

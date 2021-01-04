@@ -2,6 +2,7 @@ const path = require('path')
 const webpack = require('webpack')
 
 module.exports = {
+  mode: 'development', // 'production'
   entry: './src/index.js',
   output: {
     filename: 'main.js',
@@ -20,6 +21,5 @@ module.exports = {
       Buffer: ['buffer', 'Buffer'],
       process: 'process/browser'
     })
-  ],
-  mode: 'development' // 'production'
+  ]
 }

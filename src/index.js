@@ -8,10 +8,10 @@ const { once } = require('events')
   // Drag-and-Drop File Uploader With Progress Bar (Vanilla JavaScript)
   // https://www.smashingmagazine.com/2018/01/drag-drop-file-uploader-vanilla-js/
 
+  const fileElem = document.getElementById('fileElem')
+  fileElem.addEventListener('change', function () { handleFiles(this.files) }, false)
+
   const dropArea = document.getElementById('drop-area')
-  // let filesDone = 0
-  // let filesToDo = 0
-  // let progressBar = document.getElementById('progress-bar')
 
   // Prevent default behaviors
   ;['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
@@ -78,7 +78,7 @@ function removeElement (eid) {
   }
 }
 
-async function handleFiles (files) {
+export async function handleFiles (files) {
   // files.length can be used to show the processing progress
   // ([...files]).forEach(parseFile); // files is not an array, but a FileList
 
@@ -147,7 +147,7 @@ async function handleFiles (files) {
  * @param {function(sizeProcessed: int} progress  - parsing progress callback
  * @return succeed
  */
-async function parseFile (file, msgs, progress) {
+export async function parseFile (file, msgs, progress) {
   const sizeRemMB = file.size % (1024 * 1024)
   console.info(`Parsing ${file.size - sizeRemMB} MB and ${sizeRemMB} bytes: ${file.name}`)
   const freader = file.stream().getReader()
