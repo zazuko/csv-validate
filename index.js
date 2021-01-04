@@ -37,23 +37,21 @@ class Parser { // ValidatingParser
       skipLinesWithError
     })
 
+    if (!input.readable && input.readableEnded) {
+      output.emit('end')
+      return output
+    }
+
     // Process the remained input data
     input.on('error', (err) => {
       output.emit('error', err)
-      // if (!output.readable) {
-      //   output.emit('end')
-      // }
+      console.warn('input.error()')
     })
     // .on('end', () => {
     //   if (!output.readable) {
     //     output.emit('end')
     //   }
     // })
-
-    // output.on('error', (err) => {
-    //   // output.emit('error', err)
-    //   console.error(err) // ? Same as throw new Error(err)
-    // }
 
     // Identify delimiter and quotes, given the CSV stream
     if (!this.delimiter || !this.quotes) {
@@ -75,20 +73,20 @@ class Parser { // ValidatingParser
 
         const updOpts = {}
         if (!this.delimiter && csvMeta.delimiter) {
-          console.info(`Inferred delimiter: ${csvMeta.delimiter}`)
+          console.info(`inpPartProc()> Inferred delimiter: ${csvMeta.delimiter}`)
           updOpts.delimiter = this.delimiter = csvMeta.delimiter
-          // console.info(`inpPartProc() after sniffing: delimiter: ${output.parser.options.delimiter}, quote: ${output.parser.options.quote}`)
+          // console.info(`inpPartProc()> after sniffing: delimiter: ${output.parser.options.delimiter}, quote: ${output.parser.options.quote}`)
           // output.setDelimiter(this.delimiter) // || ','
         }
         if (!this.quotes && csvMeta.quoteChar) {
-          console.info(`Inferred quoteChar: ${csvMeta.quoteChar}`)
+          console.info(`inpPartProc()> Inferred quoteChar: ${csvMeta.quoteChar}`)
           updOpts.quoteChar = this.quotes = csvMeta.quoteChar // || ''
           // output.parser.setQuote([...this.quotes][0]) // || '"'
         }
         if (!this.newLine && csvMeta.newlineStr) {
           let cpoints = ''
           for (const cp of csvMeta.newlineStr) { cpoints += ' 0x' + cp.codePointAt(0).toString(16).toUpperCase() }
-          console.info(`Inferred newLine (codepoints): ${cpoints}`)
+          console.info(`inpPartProc()> Inferred newLine (codepoints): ${cpoints}`)
           updOpts.newlineStr = this.newLine = csvMeta.newlineStr // || ''
         }
 
@@ -105,13 +103,27 @@ class Parser { // ValidatingParser
 
         rdinp.on('error', (err) => {
           output.emit('error', err)
-        }).pipe(output) // , { end: false }
-          .on('end', () => {
-            // if (input.readable) {
-            //   input.pipe(output)
+        }).on('end', () => {
+          console.debug(`rdinp.end()> input is {readable: ${input.readable}, ended: ${input.readableEnded}}`)
+          if (!input.readable && input.readableEnded) {
+            output.emit('end')
+            return
+          }
+
+          input.on('end', () => {
+            console.debug('input.end()')
+            // if (!output.readable) {
+            //   output.emit('end')
             // }
-            input.pipe(output)
           })
+          // .on('finish', () => {
+          //   console.debug('input.finish()')
+          //   // if (!output.readable) {
+          //   //   output.emit('end')
+          //   // }
+          // })
+          input.pipe(output)
+        }).pipe(output, { end: false })
 
         // console.debug(`inpPartProc() outputting, nlf: ${nlf}, ncr: ${ncr}, inpPart [${inpPart.length}]`)
         // input.pipe(output)
@@ -123,11 +135,7 @@ class Parser { // ValidatingParser
       const ccr = '\r'.codePointAt(0)
       let nlf = 0 // Linefeed counter
       let ncr = 0 // Carriage return counter
-      // const stopRead = () => {
-      //   return Math.max(nlf, ncr) >= linesMin || inpPart.length >= lengthMax
-      // }
       const onReadable = () => {
-        // if (stopRead()) { return }
         let chunk
         // Use a loop to make sure we read all currently available data
         while ((chunk = input.read()) !== null) {
