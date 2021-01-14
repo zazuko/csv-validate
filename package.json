@@ -1,0 +1,57 @@
+{
+  "name": "csv-validate",
+  "version": "0.1.1",
+  "description": "A CSV validator, featuring data streaming and error tracing",
+  "main": "index.js",
+  "scripts": {
+    "test": "standard && mocha",
+    "build": "webpack"
+  },
+  "standard": {
+    "ignore": [
+      "dist/main.js",
+      "test/interface.test.js"
+    ]
+  },
+  "eslintConfig": {
+    "env": {
+      "browser": true,
+      "node": true
+    }
+  },
+  "bin": {
+    "csv-validate": "./bin/csv-validate.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zazuko/csv-validate.git"
+  },
+  "keywords": [
+    "validate",
+    "csv",
+    "linter"
+  ],
+  "author": "Artem Lutov <lua@lutan.ch> (https://lutan.ch)",
+  "license": "Apache 2",
+  "bugs": {
+    "url": "https://github.com/zazuko/csv-validate"
+  },
+  "homepage": "https://github.com/zazuko/csv-validate",
+  "devDependencies": {
+    "buffer": "^6.0.3",
+    "events": "^3.2.0",
+    "mocha": "^8.1.3",
+    "process": "^0.11.10",
+    "standard": "^14.3.4",
+    "webpack": "^5.11.1",
+    "webpack-cli": "^4.3.1"
+  },
+  "dependencies": {
+    "csv-parse": "^4.14.2",
+    "csv-sniffer": "github:luav/npm-csv-sniffer",
+    "readable-stream": "^3.6.0"
+  },
+  "optionalDependencies": {
+    "commander": "^6.2.1"
+  }
+}

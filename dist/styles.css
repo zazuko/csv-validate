@@ -1,0 +1,89 @@
+body {
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+h1, h2 {
+  text-align: center;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+noscript {
+  color: red;
+  font-weight: bolder;
+  font-size: larger;
+}
+
+#drop-area {
+  border: 2px dashed #ccc;
+  border-radius: 20px;
+  width: 480px;
+  margin: 20px auto;
+  padding: 50px 20px;
+}
+#drop-area.highlight {
+  border-color: purple;
+}
+
+.csv-input-form {
+  margin-bottom: 10px;
+}
+p.csv-input-form {
+  margin-top: 0;
+}
+.button {
+  /* display: inline-block; */
+  display: block;
+  padding: 10px;
+  background: #ddd;
+  cursor: pointer;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+  /* float: right; */
+  text-align: center;
+}
+.button:hover {
+  background: #ccc;
+}
+#fileElem {
+  display: none;
+}
+
+#results {
+  margin: 2.5em auto;
+  /* min-width: 480px; */
+  /* border: 2px solid #ccc; */
+  max-width: 1024px;
+}
+progress {
+  height: 1.5em;
+  width: 100%;
+}
+
+dt {
+  font-weight: bolder;
+  padding-top: 0.7em;
+  padding-bottom: 0.3em;
+}
+
+.ok {
+  color: green;
+}
+.fail {
+  color: darkred;
+}
+.indicator {
+  padding-left: 2em;
+}
+
+#summary {
+  font-weight: bolder;
+  padding-top: 1em;
+}
+
+/*
+#gallery img {
+  width: 150px;
+  margin-bottom: 10px;
+  margin-right: 10px;
+  vertical-align: middle;
+} */
