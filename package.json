@@ -48,7 +48,6 @@
   },
   "dependencies": {
     "csv-parse": "^4.14.2",
-    "csv-sniffer": "github:luav/npm-csv-sniffer",
     "readable-stream": "^3.6.0"
   },
   "optionalDependencies": {

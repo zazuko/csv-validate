@@ -1,5 +1,5 @@
 const CsvParser = require('./lib/CsvParser')
-const CSVSniffer = require('csv-sniffer')
+const CSVSniffer = require('./lib/csv-sniffer')
 // const Stream = require('readable-stream')
 const { Readable } = require('readable-stream')
 
