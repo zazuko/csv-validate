@@ -9,8 +9,7 @@
   },
   "standard": {
     "ignore": [
-      "dist/main.js",
-      "test/interface.test.js"
+      "dist/main.js"
     ]
   },
   "eslintConfig": {

@@ -32,7 +32,6 @@ program
       // progressBar.start(100, 0)
       for (const filename in filesInfo) {
         // Handle the file
-        // const msgs = [] // Array of strings
         try {
           console.debug(`\nProcessing: ${filename}`)
           await parseFile(filename, { relaxColumnCount, skipErrorLines, delimiter, quotes, newLine, encoding }, size => {
@@ -41,14 +40,14 @@ program
           }).then(() => {
             console.debug(`Completed ${filename}`)
             processedSize += filesInfo[filename].size
+          }).catch((err) => {
+            console.error(`ERROR in ${filename}: ${err}`) // err.stack
+            processedSize += filesInfo[filename].size
+            Object.assign(filesInfo[filename], { failed: true, msgs: [`${err}`] })
           })
-            .catch((err) => {
-              console.error(`ERROR in ${filename}: ${err}`)
-              processedSize += filesInfo[filename].size
-              Object.assign(filesInfo[filename], { failed: true, msgs: [`${err}`] })
-            })
         } catch (err) {
-          console.error(`ERROR 2 in ${filename}: ${err}`)
+          // Note: this should never happen if CsvParser works correctly
+          console.error(`ERROR SYNC in ${filename}: ${err}`)
           processedSize += filesInfo[filename].size
           Object.assign(filesInfo[filename], { failed: true, msgs: [`${err}`] })
         }
