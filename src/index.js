@@ -1,7 +1,7 @@
 const CsvParser = require('../index')
+// ATTENTION, Readable.from is not supported in a browser> from-browser.js:2 Uncaught Error:  Readable.from is not available in the browser
 // const { Readable } = require('readable-stream')
 const { PassThrough } = require('readable-stream')
-// global.Buffer = global.Buffer || require('buffer').Buffer
 const { once } = require('events')
 const { version } = require('../package.json')
 
@@ -50,9 +50,6 @@ const { version } = require('../package.json')
 
   function handleDrop (e) {
     const dt = e.dataTransfer
-    // let files = dt.files
-    // handleFiles(files)
-
     // Note: there are different interfaces exist for files processing: DataTransferItemList vs
     let files = dt.files // Use DataTransfer interface to access the file(s)
     if (files === undefined && dt.items) {
@@ -109,13 +106,8 @@ export async function parseFile (file, msgs, progress) {
       .on('error', function (err) {
         // ATTENTION: msgs are not always updated on reject, so they should be updated outside
         console.debug(`csvParser> CSV Parser failed: ${err}, msgs: ${msgs && msgs.length}`)
-        // resolve(false)  // ATTENTION: Causes Uncaught (in promise) Error and hangs
         reject(err)
       })
-    // .on('data', (data) => {
-    //  processed += data.length
-    //  console.log(`Parsing progress: ${processed / file.size * 100} %`)
-    // })
       .resume() // Omit all output data (CSV parsing results), otherwise the input consumption is stopped on filling the output buffer
   })
 
@@ -124,7 +116,6 @@ export async function parseFile (file, msgs, progress) {
   let result
   while (!(result = await freader.read()).done) {
     // Note: drain event listener causes
-    // from-browser.js:2 Uncaught Error:  Readable.from is not available in the browser
     if (!input.write(result.value)) {
       // Handle backpressure
       // console.log('parseFile()> Handling backpressure')
@@ -144,9 +135,6 @@ export async function parseFile (file, msgs, progress) {
 }
 
 export async function handleFiles (files) {
-  // files.length can be used to show the processing progress
-  // ([...files]).forEach(parseFile); // files is not an array, but a FileList
-
   // Cleanup results representation
   removeElement('summary')
   removeElement('report')
@@ -171,9 +159,6 @@ export async function handleFiles (files) {
     dlReport.appendChild(dt)
 
     const msgs = [] // Array of strings
-    // const parsed = await parseFile(file, msgs, size => {
-    //   progressBar.value = Math.round((processedSize + size) / totalSize * 100)
-    // })
     let parsed = false
     try {
       await parseFile(file, msgs, size => {
@@ -201,7 +186,6 @@ export async function handleFiles (files) {
     }
     dt.appendChild(span)
 
-    // console.info('Messages: ' + msgs.length)
     for (const msg of msgs) {
       const dd = document.createElement('dd')
       dd.textContent = msg

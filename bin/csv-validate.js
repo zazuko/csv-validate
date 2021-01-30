@@ -87,18 +87,11 @@ async function parseFile (filename, { relaxColumnCount, skipErrorLines, delimite
   let processed = 0 // Bytes processed
 
   fstream.on('data', (data) => {
-    //  console.log(`fstream chunk size: ${data.length}`)
+    // console.log(`fstream chunk size: ${data.length}`)
     // console.log(`Parsing progress: ${processed / file.size * 100} %`)
     processed += data.length
     progress(processed)
   })
-
-  // Note: direct return prevents await on parser until its completion
-  // return CsvParser.import(fstream, { relaxColumnCount, skipErrorLines, delimiter, quotes, newLine })
-  //   .on('end', function () {
-  //     console.debug('csvParser> CSV Parser ended: ' + filename)
-  //   })
-  //   .resume() // Omit all output data (CSV parsing results), otherwise the input consumption is stopped on filling the output buffer
 
   // Handle file stream data
   // const csvParser = CsvParser.import(fstream, { relaxColumnCount, skipErrorLines, delimiter, quotes, newLine })
