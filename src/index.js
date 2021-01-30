@@ -3,6 +3,7 @@ const CsvParser = require('../index')
 const { PassThrough } = require('readable-stream')
 // global.Buffer = global.Buffer || require('buffer').Buffer
 const { once } = require('events')
+const { version } = require('../package.json')
 
 ;(function () {
   // Drag-and-Drop File Uploader With Progress Bar (Vanilla JavaScript)
@@ -12,6 +13,10 @@ const { once } = require('events')
   fileElem.addEventListener('change', function () { handleFiles(this.files) }, false)
 
   const dropArea = document.getElementById('drop-area')
+
+  // Show the version number
+  const appVersion = document.getElementById('app-version')
+  appVersion.textContent = version
 
   // Prevent default behaviors
   ;['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
