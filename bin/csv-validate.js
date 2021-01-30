@@ -108,6 +108,7 @@ async function parseFile (filename, { relaxColumnCount, skipErrorLines, delimite
       .on('error', function (err) {
         // ATTENTION: msgs are not always updated on reject, so they should be updated outside
         // console.debug(`csvParser> CSV Parser failed: ${err}`) // , msgs: ${msgs && msgs.length}`)
+        // fstream.close()
         reject(err)
       })
       .resume() // Omit all output data (CSV parsing results), otherwise the input consumption is stopped on filling the output buffer
