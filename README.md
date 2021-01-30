@@ -20,7 +20,7 @@ To build the Web UI, just execute `npm run build` from the package directory, pr
 ![WebUI screenshot](img/csv-validate_WebUI.png)
 
 ### VuePress Component
-The VuePress component is located in `dist/VuePress/` and relies on `dist/main.js`. To install it into your VuePress, build the WebUI bundle, and then copy:
+The VuePress component is located in `dist/VuePress/` and relies on `dist/main.js`. To install it into your VuePress, build the [WebUI bundle](#web-ui), and then copy:
 ```sh
 $ cp dist/main.js ${VUEPRESS_ROOT}/
 $ cp dist/VuePress/CsvValidate.vue ${VUEPRESS_ROOT}/components/
