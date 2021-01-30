@@ -34,36 +34,11 @@ export default {
     import('../main').then(module => {
       this.dynamicComponent = module.default
     })
-    // if (!window.Stripe) {
-    //   const stripeScript = document.createElement('script')
-    //   stripeScript.setAttribute('src', 'https://js.stripe.com/v3')
-    //   stripeScript.onload = () => {
-    //     this.stripe = window.Stripe('pk_live_ASX9Wwep9HMDO883ZVtFpNMw00haqSFDt9')
-    //   }
-    //   document.head.appendChild(stripeScript)
-    // }
   },
-  // data() {
-  //   return {
-  //     message: 'TestComp'
-  //   }
-  // },
-  // methods: {
-  //   click() {
-  //     alert('hi')
-  //   }
-  // },
-  // props: ['title']
 }
 </script>
 
 <style>
- /* .box {
-   padding: 20px;
-   margin: 2px;
-   box-shadow: 0 0 10px black;
- } */
-
 noscript {
   color: #c30000;
   font-weight: bolder;
