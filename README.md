@@ -19,6 +19,16 @@ dist/
 To build the Web UI, just execute `npm run build` from the package directory, producing the `main.js` bundle in `dist/`. Afterward, open `index.html` in your browser to use the web app:
 ![WebUI screenshot](img/csv-validate_WebUI.png)
 
+### VuePress Component
+The VuePress component is located in `dist/VuePress/` and relies on `dist/main.js`. To install it into your VuePress, build the WebUI bundle, and then copy:
+```sh
+$ cp dist/main.js ${VUEPRESS_ROOT}/
+$ cp dist/VuePress/CsvValidate.vue ${VUEPRESS_ROOT}/components/
+$ cp dist/VuePress/csv-validate.md ${VUEPRESS_ROOT}/..
+```
+where `${VUEPRESS_ROOT}` is typically `<WEBSITE_APP>/.vuepress`.
+![VuePress CsvValidate Component screenshot](img/CsvValidate_VuePress.png)
+
 ## CLI
 Console UI provides the following interface:
 ```sh
