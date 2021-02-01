@@ -257,26 +257,26 @@ it('should respect unicode ("Ḋ"=U+1E0A includes the byte code 0xA of "\\n"=U+0
   })
 })
 
-it('should fail on bad CSV', () => {
+it('should fail with the exception catching on bad CSV', () => {
   const input = new PassThrough()
   input.write('kzy1,key2\n')
   input.write('value1_1;value2_1\n')
   input.write('value1_2,value2_2\n')
   input.end()
 
-  try {
-    // eslint-disable-next--- NodeJS features top-level await: https://www.gitmemory.com/issue/standard/standard/1548/711360331
-    await (async function () {  // eslint-disable-line
-      // const parser = Parser.import(input, { newLine: '\n', quotes: '"', delimiter: ',' })
-      const parser = Parser.import(input, { newLine: '\n', quotes: '"' })
-      const futureRes = consume(parser)
-      return futureRes.then(() => {
-        assert.fail('Bad CSV is processed silently')
-      }).catch(err => {
-        assert.ok('Bad CSV is caught: ' + err)
-      })
-    })()
-  } catch (err) {
-    assert.ok('Bad CSV is caught explicitly: ' + err)
-  }
+  // try {
+  //   // eslint-disable-next--- NodeJS features top-level await: https://www.gitmemory.com/issue/standard/standard/1548/711360331
+  //   await (async function () {  // eslint-disable-line
+  // // const parser = Parser.import(input, { newLine: '\n', quotes: '"', delimiter: ',' })
+  const parser = Parser.import(input, { newLine: '\n', quotes: '"' })
+  const futureRes = consume(parser)
+  return futureRes.then(() => {
+    assert.fail('Bad CSV is processed silently')
+  }).catch(err => {
+    assert.ok('Bad CSV is caught: ' + err)
+  })
+  //   })()
+  // } catch (err) {
+  //   assert.ok('Bad CSV is caught explicitly: ' + err)
+  // }
 })

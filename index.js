@@ -1,5 +1,5 @@
 const CsvParser = require('./lib/CsvParser')
-const CSVSniffer = require('csv-sniffer')
+const CSVSniffer = require('./lib/csv-sniffer')
 // const Stream = require('readable-stream')
 const { Readable } = require('readable-stream')
 
@@ -45,7 +45,7 @@ class Parser { // ValidatingParser
     // Process the remained input data
     input.on('error', (err) => {
       output.emit('error', err)
-      console.warn('input.error()')
+      // console.warn('input.error()')
     })
     // .on('end', () => {
     //   if (!output.readable) {
@@ -104,14 +104,14 @@ class Parser { // ValidatingParser
         rdinp.on('error', (err) => {
           output.emit('error', err)
         }).on('end', () => {
-          console.debug(`rdinp.end()> input is {readable: ${input.readable}, ended: ${input.readableEnded}}`)
+          // console.debug(`inpPartProc()/rdinp.end()>, input is {readable: ${input.readable}, ended: ${input.readableEnded}}`)
           if (!input.readable && input.readableEnded) {
             output.emit('end')
             return
           }
 
           input.on('end', () => {
-            console.debug('input.end()')
+            // console.debug('inpPartProc()/rdinp.end()/input.end()')
             // if (!output.readable) {
             //   output.emit('end')
             // }

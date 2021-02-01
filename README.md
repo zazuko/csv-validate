@@ -19,6 +19,16 @@ dist/
 To build the Web UI, just execute `npm run build` from the package directory, producing the `main.js` bundle in `dist/`. Afterward, open `index.html` in your browser to use the web app:
 ![WebUI screenshot](img/csv-validate_WebUI.png)
 
+### VuePress Component
+The VuePress component is located in `dist/VuePress/` and relies on `dist/main.js`. To install it into your VuePress, build the [WebUI bundle](#web-ui), and then copy:
+```sh
+$ cp dist/main.js ${VUEPRESS_ROOT}/
+$ cp dist/VuePress/CsvValidate.vue ${VUEPRESS_ROOT}/components/
+$ cp dist/VuePress/csv-validate.md ${VUEPRESS_ROOT}/..
+```
+where `${VUEPRESS_ROOT}` is typically `<WEBSITE_APP>/.vuepress`.
+![VuePress CsvValidate Component screenshot](img/CsvValidate_VuePress.png)
+
 ## CLI
 Console UI provides the following interface:
 ```sh
@@ -46,6 +56,55 @@ $ npm install [-g] csv-validate
 Otherwise, the executable can be called from the package sources as:
 ```sh
 $ bin/csv-validate.js -h
+```
+
+Example:
+```
+$ bin/csv-validate.js test/csv/HDB*.csv
+
+Processing: test/csv/HDB_GLOSSAR.csv
+Processing progress: 12 %
+inpPartProc()> Inferred delimiter: ,
+inpPartProc()> Inferred quoteChar: "
+inpPartProc()> Inferred newLine (codepoints):  0xD 0xA
+ERROR in test/csv/HDB_GLOSSAR.csv: Error: Invalid Record Length: columns length is 10, got 3 on line 42
+
+Processing: test/csv/HDB_KENZAHLEN.csv
+Processing progress: 14 %
+inpPartProc()> Inferred delimiter: ,
+inpPartProc()> Inferred quoteChar: "
+inpPartProc()> Inferred newLine (codepoints):  0xA
+Processing progress: 25 %
+ERROR in test/csv/HDB_KENZAHLEN.csv: Error: Invalid Record Length: columns length is 14, got 11 on line 167
+
+Processing: test/csv/HDB_QUELLE.csv
+Processing progress: 27 %
+inpPartProc()> Inferred delimiter: ,
+inpPartProc()> Inferred quoteChar: "
+inpPartProc()> Inferred newLine (codepoints):  0xD 0xA
+Processing progress: 37 %
+Completed test/csv/HDB_QUELLE.csv
+
+Processing: test/csv/HDB_RAUM_fail.csv
+Processing progress: 41 %
+inpPartProc()> Inferred delimiter: ,
+inpPartProc()> Inferred quoteChar: "
+inpPartProc()> Inferred newLine (codepoints):  0xD 0xA
+Processing progress: 55 %
+Processing progress: 68 %
+Processing progress: 82 %
+Processing progress: 95 %
+Processing progress: 100 %
+ERROR in test/csv/HDB_RAUM_fail.csv: Error: Invalid Record Length: columns length is 24, got 22 on line 3810
+
+CSV Validation Summary:
+test/csv/HDB_GLOSSAR.csv    FAIL
+    Error: Invalid Record Length: columns length is 10, got 3 on line 42
+test/csv/HDB_KENZAHLEN.csv    FAIL
+    Error: Invalid Record Length: columns length is 14, got 11 on line 167
+test/csv/HDB_QUELLE.csv    OK
+test/csv/HDB_RAUM_fail.csv    FAIL
+    Error: Invalid Record Length: columns length is 24, got 22 on line 3810
 ```
 
 ## NodeJS Module
