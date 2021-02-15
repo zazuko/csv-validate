@@ -5,19 +5,17 @@ This JS CSV validating parser is based on [csv-parse](https://github.com/wdavidw
 
 `\author` Artem Lutov <lua&#64;&#108;utan&#46;ch>  
 `\affiliation` [Zazuko GmbH](https://zazuko.com), [Lutov Analytics](https://lutan.ch)  
-`\license` [Apache 2](https://www.apache.org/licenses/LICENSE-2.0)  
+`\license` [Apache 2](https://www.apache.org/licenses/LICENSE-2.0)
 
 ## Web UI
-The Web UI bundle is located in `dist/` and consists of 3 files (and optional `test.csv` example to test the web app):
-```sh
-dist/
-  index.html
-  styles.css
-  main.js
-```
 
-To build the Web UI, just execute `npm run build` from the package directory, producing the `main.js` bundle in `dist/`. Afterward, open `index.html` in your browser to use the web app:
+The Web UI is a Web Component built using [`lit-element`](https://npm.im/lit-element).
+
+To use in an application simply `import 'csv-validate/csv-validate.js'` and place a `<csv-validate>` tag in your HTML. (**requires build with webpack**)
+
 ![WebUI screenshot](img/csv-validate_WebUI.png)
+
+The element can be run locally by simply `npm start`.
 
 ## CLI
 Console UI provides the following interface:
