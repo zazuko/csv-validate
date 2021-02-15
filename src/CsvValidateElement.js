@@ -15,6 +15,9 @@ export class CsvValidateElement extends LitElement {
       },
       files: {
         type: Array
+      },
+      header: {
+        type: String
       }
     }
   }
@@ -101,11 +104,12 @@ export class CsvValidateElement extends LitElement {
   constructor () {
     super()
     this._results = []
+    this.header = 'CSV Validation'
   }
 
   render () {
     return html`
-      <h1>CSV Validation</h1>
+      <h1 part="header">${this.header}</h1>
       <div id="drop-area" @drop="${this._handleDrop}">
           <form class="csv-input-form">
               <p>Upload CSV files for the validation with the file dialog or by dragging and dropping them onto the dashed
