@@ -1,7 +1,4 @@
 package-lock.json
 node_modules/
-dist/**/
-dist/*.js
-dist/*.map
-dist/*.txt
+dist/
 test/csv/

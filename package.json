@@ -5,8 +5,16 @@
   "main": "index.js",
   "scripts": {
     "test": "standard && mocha",
+    "prepare": "webpack --config webpack.build.config.js --mode production",
     "start": "webpack-dev-server --mode development"
   },
+  "files": [
+    "bin",
+    "lib",
+    "dist",
+    "index.js",
+    "csv-validate.js"
+  ],
   "standard": {
     "ignore": [
       "csv-validate.js",

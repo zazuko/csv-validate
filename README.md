@@ -13,6 +13,8 @@ The Web UI is a Web Component built using [`lit-element`](https://npm.im/lit-ele
 
 To use in an application simply `import 'csv-validate/csv-validate.js'` and place a `<csv-validate>` tag in your HTML. (**requires build with webpack**)
 
+To use in an environment where building is problematic or there is not build you import `'csv-validate/dist/csv-validate.js'` instead.
+
 ![WebUI screenshot](img/csv-validate_WebUI.png)
 
 The element can be run locally by simply `npm start`.
