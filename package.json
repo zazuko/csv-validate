@@ -11,6 +11,7 @@
   "files": [
     "bin",
     "lib",
+    "src",
     "dist",
     "index.js",
     "csv-validate.js"
