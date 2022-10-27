@@ -24,21 +24,9 @@ program
       console.error(err.stack)
     })
 
-    // Handle file stream data
     const parser = new Parser({ relaxColumnCount, skipErrorLines, delimiter, quotes, newLine })
-    fstream.pipe(parser).on('end', function () {
-      console.debug(`The ${filename} parsing is completed`)
-    }).catch(err => console.error(err))
 
-    // fstream.pipe(parser).on('readable', () => {
-    //   // Use a loop to make sure we read all currently available data
-    //   while (null !== (chunk = readable.read()))
-    //     console.log(fstream.read())  // Read the subsequent chunk
-    // }).catch(err => console.error(err))
-
-    // fstream.pipe(parser).on('data', (chunk) => {
-    //   console.log(chunk.toString())  // chunk
-    // })
+    parser.import(fstream, { relaxColumnCount, skipLinesWithError: skipErrorLines })
   })
 
 program.parse(process.argv)
